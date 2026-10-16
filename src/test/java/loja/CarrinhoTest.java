@@ -1,21 +1,29 @@
 package loja;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CarrinhoTest {
 
+    private Carrinho carrinho;
+    private Produto camiseta;
+    private Produto caneca;
+
+    @BeforeEach
+    void prepararCenario() {
+        carrinho = new Carrinho();
+        camiseta = new Produto("Camiseta", 50.0, 10);
+        caneca = new Produto("Caneca", 30.0, 3);
+    }
+
     @Test
     void carrinhoVazioTemTotalZero() {
-        Carrinho carrinho = new Carrinho();
         assertEquals(0.0, carrinho.calcularTotal());
     }
 
     @Test
     void adicionarItemAumentaTotalPorPrecoVezesQuantidade() throws EstoqueInsuficienteException {
-        Carrinho carrinho = new Carrinho();
-        Produto camiseta = new Produto("Camiseta", 50.0, 10);
-
         carrinho.adicionar(camiseta, 2);
 
         assertEquals(100.0, carrinho.calcularTotal(), 0.001);
@@ -23,18 +31,12 @@ class CarrinhoTest {
 
     @Test
     void naoPermiteAdicionarQuantidadeMaiorQueEstoque() {
-        Carrinho carrinho = new Carrinho();
-        Produto caneca = new Produto("Caneca", 30.0, 3);
-
         assertThrows(EstoqueInsuficienteException.class,
                 () -> carrinho.adicionar(caneca, 5));
     }
 
     @Test
     void removerItemReduzTotal() throws EstoqueInsuficienteException {
-        Carrinho carrinho = new Carrinho();
-        Produto camiseta = new Produto("Camiseta", 50.0, 10);
-        Produto caneca = new Produto("Caneca", 30.0, 3);
         carrinho.adicionar(camiseta, 2);
         carrinho.adicionar(caneca, 1);
 
