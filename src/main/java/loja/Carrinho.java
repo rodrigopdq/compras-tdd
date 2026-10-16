@@ -35,6 +35,12 @@ public class Carrinho {
         return subtotal;
     }
 
+    public void finalizarCompra() throws CarrinhoVazioException {
+        if (itens.isEmpty()) {
+            throw new CarrinhoVazioException("Nao e possivel finalizar a compra com o carrinho vazio.");
+        }
+    }
+
     private void validarEstoque(Produto produto, int quantidade) throws EstoqueInsuficienteException {
         if (quantidade > produto.getEstoque()) {
             throw new EstoqueInsuficienteException(
