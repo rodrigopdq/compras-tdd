@@ -44,4 +44,14 @@ class CarrinhoTest {
 
         assertEquals(100.0, carrinho.calcularTotal(), 0.001);
     }
+
+    @Test
+    void cupomValidoReduzTotalPeloPercentual() throws EstoqueInsuficienteException {
+        carrinho.adicionar(camiseta, 2);
+        Cupom cupom = new Cupom("DESCONTO10", 10.0);
+
+        carrinho.aplicarCupom(cupom);
+
+        assertEquals(90.0, carrinho.calcularTotal(), 0.001);
+    }
 }
