@@ -66,4 +66,10 @@ class CarrinhoTest {
         assertThrows(CupomJaAplicadoException.class,
                 () -> carrinho.aplicarCupom(cupom));
     }
+
+    @Test
+    void naoPermiteFinalizarCompraComCarrinhoVazio() {
+        assertThrows(CarrinhoVazioException.class,
+                () -> carrinho.finalizarCompra());
+    }
 }
