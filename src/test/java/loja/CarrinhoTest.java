@@ -6,27 +6,31 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class CarrinhoTest {
 
+    private static final double MARGEM = 0.001;
+
     private Carrinho carrinho;
     private Produto camiseta;
     private Produto caneca;
+    private Cupom cupomDezPorCento;
 
     @BeforeEach
     void prepararCenario() {
         carrinho = new Carrinho();
         camiseta = new Produto("Camiseta", 50.0, 10);
         caneca = new Produto("Caneca", 30.0, 3);
+        cupomDezPorCento = new Cupom("DESCONTO10", 10.0);
     }
 
     @Test
     void carrinhoVazioTemTotalZero() {
-        assertEquals(0.0, carrinho.calcularTotal());
+        assertEquals(0.0, carrinho.calcularTotal(), MARGEM);
     }
 
     @Test
     void adicionarItemAumentaTotalPorPrecoVezesQuantidade() throws EstoqueInsuficienteException {
         carrinho.adicionar(camiseta, 2);
 
-        assertEquals(100.0, carrinho.calcularTotal(), 0.001);
+        assertEquals(100.0, carrinho.calcularTotal(), MARGEM);
     }
 
     @Test
@@ -42,29 +46,27 @@ class CarrinhoTest {
 
         carrinho.remover(caneca);
 
-        assertEquals(100.0, carrinho.calcularTotal(), 0.001);
+        assertEquals(100.0, carrinho.calcularTotal(), MARGEM);
     }
 
     @Test
     void cupomValidoReduzTotalPeloPercentual()
             throws EstoqueInsuficienteException, CupomJaAplicadoException {
         carrinho.adicionar(camiseta, 2);
-        Cupom cupom = new Cupom("DESCONTO10", 10.0);
 
-        carrinho.aplicarCupom(cupom);
+        carrinho.aplicarCupom(cupomDezPorCento);
 
-        assertEquals(90.0, carrinho.calcularTotal(), 0.001);
+        assertEquals(90.0, carrinho.calcularTotal(), MARGEM);
     }
 
     @Test
     void naoPermiteAplicarMesmoCupomDuasVezes()
             throws EstoqueInsuficienteException, CupomJaAplicadoException {
         carrinho.adicionar(camiseta, 2);
-        Cupom cupom = new Cupom("DESCONTO10", 10.0);
-        carrinho.aplicarCupom(cupom);
+        carrinho.aplicarCupom(cupomDezPorCento);
 
         assertThrows(CupomJaAplicadoException.class,
-                () -> carrinho.aplicarCupom(cupom));
+                () -> carrinho.aplicarCupom(cupomDezPorCento));
     }
 
     @Test

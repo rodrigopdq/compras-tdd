@@ -17,28 +17,40 @@ public class Carrinho {
         itens.removeIf(item -> item.getProduto() == produto);
     }
 
-    public void aplicarCupom(Cupom cupom) throws CupomJaAplicadoException {
-        if (this.cupom != null && this.cupom.getCodigo().equals(cupom.getCodigo())) {
+    public void aplicarCupom(Cupom novoCupom) throws CupomJaAplicadoException {
+        if (cupomJaAplicado(novoCupom)) {
             throw new CupomJaAplicadoException(
-                    "O cupom " + cupom.getCodigo() + " ja foi aplicado.");
+                    "O cupom " + novoCupom.getCodigo() + " ja foi aplicado.");
         }
-        this.cupom = cupom;
+        this.cupom = novoCupom;
     }
 
     public double calcularTotal() {
-        double subtotal = itens.stream()
-                .mapToDouble(ItemCarrinho::getSubtotal)
-                .sum();
-        if (cupom != null) {
-            subtotal -= subtotal * cupom.getPercentual() / 100;
-        }
-        return subtotal;
+        double subtotal = calcularSubtotal();
+        return subtotal - calcularDesconto(subtotal);
     }
 
     public void finalizarCompra() throws CarrinhoVazioException {
         if (itens.isEmpty()) {
             throw new CarrinhoVazioException("Nao e possivel finalizar a compra com o carrinho vazio.");
         }
+    }
+
+    private double calcularSubtotal() {
+        return itens.stream()
+                .mapToDouble(ItemCarrinho::getSubtotal)
+                .sum();
+    }
+
+    private double calcularDesconto(double subtotal) {
+        if (cupom == null) {
+            return 0.0;
+        }
+        return subtotal * cupom.getPercentual() / 100;
+    }
+
+    private boolean cupomJaAplicado(Cupom novoCupom) {
+        return cupom != null && cupom.getCodigo().equals(novoCupom.getCodigo());
     }
 
     private void validarEstoque(Produto produto, int quantidade) throws EstoqueInsuficienteException {
