@@ -17,6 +17,10 @@ public class Carrinho {
         itens.add(new ItemCarrinho(produto, quantidade));
     }
 
+    public void remover(Produto produto) {
+        itens.removeIf(item -> item.getProduto() == produto);
+    }
+
     public double calcularTotal() {
         return itens.stream()
                 .mapToDouble(ItemCarrinho::getSubtotal)
